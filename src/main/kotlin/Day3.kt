@@ -4,15 +4,12 @@ import kotlin.test.assertEquals
 object Day3 {
     fun part1(file: String): Int {
         val temp = File(file).readLines().fold(MutableList(12) { 0 }) { acc, value ->
-            value.forEachIndexed() { index, c ->
-                run {
-                    acc[index] += if (c == '1') 1 else -1
-                }
+            value.forEachIndexed { index, c ->
+                acc[index] += if (c == '1') 1 else -1
             }
             acc
-        
         }
-        val temp2 = temp.map {if (it > 0) 1 else 0}.joinToString(separator = "")
+        val temp2 = temp.map { if (it > 0) 1 else 0 }.joinToString(separator = "")
         val temp3 = temp2.map { if (it == '1') 0 else 1 }.joinToString(separator = "")
         return temp2.toInt(2) * temp3.toInt(2)
     }
@@ -21,7 +18,7 @@ object Day3 {
         var linesOxygen = File(file).readLines()
         var linesCO2 = linesOxygen.toList()
 
-        for(i in linesOxygen[0].indices) {
+        for (i in linesOxygen[0].indices) {
             val mostMap = linesOxygen.map { it[i] }.groupingBy { it }.eachCount()
 
             val most =
