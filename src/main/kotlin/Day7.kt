@@ -11,11 +11,9 @@ object Day7 {
         val positions = File(file).readLines()[0].split(",").map { it.toInt() }
         val max = positions.maxOf { it }
 
-        val positives = (0..max).map { position ->
+        return (0..max).map { position ->
             positions.sumOf { calculateFuel(it, position) }
         }.minOf { it }
-
-        return positives
     }
 
     private fun calculateCost(from: Int, to: Int): Int {
