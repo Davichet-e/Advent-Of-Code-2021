@@ -1,4 +1,5 @@
 import java.io.File
+import kotlin.test.assertEquals
 
 /// https://stackoverflow.com/a/66851564
 fun String.permute(result: String = ""): List<String> =
@@ -33,7 +34,7 @@ object Day8 {
         val f = sevenDisplay[5]
         val g = sevenDisplay[6]
 
-        return if (sevenDisplay.count { it } == 7) {
+        return if (sevenDisplay.all { it }) {
             8
         } else if (a && b && c && e && f && g && !d) {
             0
@@ -81,5 +82,13 @@ data class Output(val digits: List<String>) {
 }
 
 fun main() {
-    println(Day8.part2("inputs/day8"))
+    val file = "inputs/day8"
+
+    val part1Answer = Day8.part1(file)
+    assertEquals(part1Answer, 554)
+
+    val part2Answer = Day8.part2(file)
+    assertEquals(part2Answer, 990964)
+
+    println("Day 8 answers:\nPart 1: $part1Answer\nPart 2: $part2Answer")
 }
