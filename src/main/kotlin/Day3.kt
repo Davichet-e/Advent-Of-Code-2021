@@ -2,6 +2,9 @@ import java.io.File
 import kotlin.test.assertEquals
 
 object Day3 {
+    val binaryOne = '1'
+    val binaryZero = '0'
+
     fun part1(file: String): Int {
         val temp = File(file).readLines().fold(MutableList(12) { 0 }) { acc, value ->
             value.forEachIndexed { index, c ->
@@ -9,28 +12,50 @@ object Day3 {
             }
             acc
         }
-        val temp2 = temp.map { if (it > 0) 1 else 0 }.joinToString(separator = "")
-        val temp3 = temp2.map { if (it == '1') 0 else 1 }.joinToString(separator = "")
+        temp.toString().filter { it == '0' || it == '1' }
+
+        val temp2 = temp.toString().filter { it == '0' || it == '1' }
+        val temp3 = temp2.filter { it == '0' || it == '1' }
         return temp2.toInt(2) * temp3.toInt(2)
     }
 
+    private fun countOnesAndZeroes(lines: List<String>, index: Int): Map<Char, Int> {
+        return lines.map { it[index] }.groupingBy { it }.eachCount()
+    }
+
+    fun countOnes(lines: List<String>, i: Int): Int =
+        lines.count { it[i] == binaryOne }
+
+    fun countZeroes(lines: List<String>, i: Int): Int =
+        lines.count { it[i] == binaryZero }
+
+    fun botijo(entry: Map.Entry<Char, Int>): Int =
+        if (entry.key == binaryOne) 1
+        else -1
+
+    fun comparator(entryA: Map.Entry<Char, Int>, entryB: Map.Entry<Char, Int>) =
+        if (entryA.value == entryB.value)
+            botijo(entryA)
+        else entryA.value - entryB.value
+
     fun part2(file: String): Int {
-        var linesOxygen = File(file).readLines()
+        val linesOxygen = File(file).readLines()
         var linesCO2 = linesOxygen.toList()
 
-        for (i in linesOxygen[0].indices) {
-            val mostMap = linesOxygen.map { it[i] }.groupingBy { it }.eachCount()
+        // for (i in linesOxygen[0].indices) {
+        linesOxygen[0].foldIndexed(linesOxygen) { i, acc, _ ->
+            val countOfOcurrencesOf1sAnd0s = countOnesAndZeroes(linesOxygen, i)
 
-            val most =
-                mostMap.maxWithOrNull { a, b ->
-                    if (a.value == b.value)
-                        if (a.key == '1') 1
-                        else -1
-                    else a.value - b.value
-                }!!.key
-            linesOxygen = linesOxygen.filter { it[i] == most }
-            if (linesOxygen.size == 1) break
+            val mostCommon =
+                (countOfOcurrencesOf1sAnd0s.maxWithOrNull { entryA, entryB ->
+                    comparator(entryA, entryB)
+                } ?: throw Exception("Bad Input")).key
+
+            // linesOxygen = linesOxygen.filter { it[i] == most }
+            // if (linesOxygen.size == 1) break
+            acc.filter { it[i] == mostCommon }
         }
+            // .takeWhile { it.size > 1 }
 
         for (i in linesCO2[0].indices) {
             val leastMap = linesCO2.map { it[i] }.groupingBy { it }.eachCount()
